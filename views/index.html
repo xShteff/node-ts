@@ -103,7 +103,7 @@
         methods: {
           colourPickle(x, y) {
             app.socket.emit("updatePickle", x, y, app.currentColour);
-            app.grid[x][y].colour = app.currentColour;
+            app.grid[x][y].colour = app.currentColour; // TODO: This actually binds to the colour
           }
         }
       });
