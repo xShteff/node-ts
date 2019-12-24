@@ -12,7 +12,7 @@ let io = require("socket.io")(http);
 
 let allMessages: string[] = [];
 
-let grid = Grid.generateGrid(10, 10);
+let grid = Grid.generateGrid(30, 30);
 
 app.get("/", (req: any, res: any) => {
   res.sendFile(path.resolve("./views/index.html"));
@@ -33,8 +33,9 @@ io.on("connection", (socket: any) => {
     grid[x][y] = {
       colour: colour
     } as Pickle;
-    // socket.emit("pickleUpdated", x, y, colour);
-    socket.emit("broadcastGrid", grid);
+    
+    socket.broadcast.emit("broadcastGrid", grid); // This notifies everyone...
+    socket.emit("broadcastGrid", grid); // This notifies yourself, keeping it here so I dont have to generate the utils again...
   });
 
   socket.emit("broadcastGrid", grid);

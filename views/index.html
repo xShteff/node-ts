@@ -3,34 +3,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Messing out with Sockets</title>
+    <title>Pickle Art</title>
     <style>
       .pickle {
-        width: 50px;
-        height: 50px;
+        width: 20px;
+        height: 20px;
         border: 1px solid black;
         display: inline-block;
         background: rgb(10, 0, 0);
+      }
+      .sliders {
+        width: 200px;
+        padding: 10px;
+      }
+      .slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 5px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: 0.2s;
+        transition: opacity 0.2s;
+      }
+
+      .slider:hover {
+        opacity: 1;
       }
     </style>
   </head>
   <body>
     <div id="app">
-      <input type="text" v-model="currentMessage" />
-      <button v-on:click="sendMsg">Hit Me</button>
+      <div class="sliders">
+        Red: {{currentColour.red}}
+        <input
+          type="range"
+          min="0"
+          max="255"
+          class="slider .slider-red"
+          id="myRange"
+          v-model="currentColour.red"
+        />
+        Green: {{currentColour.green}}
+        <input
+          type="range"
+          min="0"
+          max="255"
+          class="slider"
+          id="myRange"
+          v-model="currentColour.green"
+        />
+        Blue: {{currentColour.blue}}
+        <input
+          type="range"
+          min="0"
+          max="255"
+          class="slider"
+          id="myRange"
+          v-model="currentColour.blue"
+        />
 
+        <span
+          class="pickle"
+          v-bind:style="{background: 'rgb(' + currentColour.red + ',' + currentColour.green + ',' + currentColour.blue + ')'}"
+        ></span>
+      </div>
       <div v-for="(row, rowNumber) in grid">
         <span
           class="pickle"
           v-for="(pickle, pickleNumber) in row"
-          v-bind:style="{ background: pickle.colour.cssString }"
-          v-on:click="doStuff(rowNumber, pickleNumber)"
-        >{{rowNumber}} {{pickleNumber}}</span>
+          v-bind:style="{background: 'rgb(' + pickle.colour.red + ',' + pickle.colour.green + ',' + pickle.colour.blue + ')'}"
+          v-on:click="colourPickle(rowNumber, pickleNumber)"
+        ></span>
       </div>
-
-      <ul>
-        <li v-for="message in messages">{{message}}</li>
-      </ul>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
@@ -41,14 +86,17 @@
       var app = new Vue({
         el: "#app",
         data: {
-          currentMessage: "",
-          messages: ["Test"],
+          currentColour: {
+            red: 69,
+            green: 169,
+            blue: 120 // Pickle-green
+          },
           grid: []
         },
         methods: {
-          doStuff(x, y) {
-            console.log(`${x} ${y}`)
-            socket.emit("updatePickle", x, y, {red: 255, green: 0, blue: 0})
+          colourPickle(x, y) {
+            socket.emit("updatePickle", x, y, app.currentColour);
+            app.grid[x][y].colour = app.currentColour;
           },
           sendMsg() {
             socket.emit("message", app.currentMessage);
@@ -56,23 +104,10 @@
         }
       });
 
-      socket.on("message", function(data) {
-        app.messages.push(data);
-      });
-
-      socket.on("allMessages", function(data) {
-        app.messages = data;
-      });
-
       socket.on("broadcastGrid", grid => {
-        console.log(grid);
         app.grid = grid;
       });
 
-      socket.on("pickleUpdated", (x, y, colour) => {
-        console.log(colour);
-        app.grid[x][y].colour = colour;
-      });
     </script>
   </body>
 </html>
