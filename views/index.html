@@ -4,11 +4,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Messing out with Sockets</title>
+    <style>
+      .pickle {
+        width: 50px;
+        height: 50px;
+        border: 1px solid black;
+        display: inline-block;
+        background: rgb(10, 0, 0);
+      }
+    </style>
   </head>
   <body>
     <div id="app">
-      <input type="text" v-model="currentMessage">
+      <input type="text" v-model="currentMessage" />
       <button v-on:click="sendMsg">Hit Me</button>
+
+      <div v-for="(row, rowNumber) in grid">
+        <span
+          class="pickle"
+          v-for="(pickle, pickleNumber) in row"
+          v-bind:style="{ background: pickle.colour.cssString }"
+          v-on:click="doStuff(rowNumber, pickleNumber)"
+        >{{rowNumber}} {{pickleNumber}}</span>
+      </div>
 
       <ul>
         <li v-for="message in messages">{{message}}</li>
@@ -24,9 +42,14 @@
         el: "#app",
         data: {
           currentMessage: "",
-          messages: ["Test"]
+          messages: ["Test"],
+          grid: []
         },
         methods: {
+          doStuff(x, y) {
+            console.log(`${x} ${y}`)
+            socket.emit("updatePickle", x, y, {red: 255, green: 0, blue: 0})
+          },
           sendMsg() {
             socket.emit("message", app.currentMessage);
           }
@@ -39,6 +62,16 @@
 
       socket.on("allMessages", function(data) {
         app.messages = data;
+      });
+
+      socket.on("broadcastGrid", grid => {
+        console.log(grid);
+        app.grid = grid;
+      });
+
+      socket.on("pickleUpdated", (x, y, colour) => {
+        console.log(colour);
+        app.grid[x][y].colour = colour;
       });
     </script>
   </body>
