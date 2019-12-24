@@ -38,6 +38,7 @@
   </head>
   <body>
     <div id="app">
+      User count: {{userCount}}
       <div class="sliders">
         Red: {{currentColour.red}}
         <input
@@ -96,7 +97,8 @@
             blue: 120 // Pickle-green
           },
           grid: [],
-          socket: io("http://localhost:3000")
+          socket: io("http://localhost:3000"),
+          userCount: 0
         },
         methods: {
           colourPickle(x, y) {
@@ -111,6 +113,11 @@
 
       app.socket.on("broadcastGrid", grid => {
         app.grid = grid;
+      });
+
+      app.socket.on("userCount", userCount => {
+        app.userCount = userCount;
+        console.log(userCount);
       });
 
     </script>
