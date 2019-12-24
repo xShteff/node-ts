@@ -8,7 +8,7 @@ Right now the app is some kind of Pixel (Pickle) art thing, where you can select
 
 Make sure you've installed all the dependencies using `npm i`.
 
-To run the app simply run `npm run watch` then open your browser and access `http://localhost:3000`.
+To run the app simply run `npm run start` or `npm run watch` then open your browser and access `http://localhost:3000`.
 
 ## TODO
 
