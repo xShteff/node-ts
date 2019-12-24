@@ -7,6 +7,8 @@ app.set("port", process.env.PORT || 3000);
 let http = require("http").Server(app);
 let io = require("socket.io")(http);
 
+let allMessages: string[] = [];
+
 app.get("/", (req: any, res: any) => {
   res.sendFile(path.resolve("./views/index.html"));
 });
@@ -15,9 +17,12 @@ app.get("/", (req: any, res: any) => {
 io.on("connection", (socket: any) => {
   console.log("a user connected");
   socket.on("message", (message: any) => {
-    console.log(message);
+    allMessages.push(message);
+    console.log(`New message: ${message}`);
     socket.emit("message", message)
   });
+
+  socket.emit("allMessages", allMessages);
 });
 
 const server = http.listen(3000, () => {
