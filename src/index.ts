@@ -1,8 +1,8 @@
 import * as express from "express";
 import * as path from "path";
-import { Pickle } from "./model";
-import { Colour } from './model/colour';
+import { Colour, Pickle } from "./model";
 import { Grid } from './utils/grid';
+
 
 const app = express();
 app.set("port", process.env.PORT || 3000);

@@ -1,6 +1,4 @@
-import { Colour } from './../model/colour';
-import { Pickle } from "./../model/pickle";
-
+import { Colour, Pickle } from './../model/';
 export class Grid {
 
 	public static generateColour(red:number, green:number, blue:number): Colour {
