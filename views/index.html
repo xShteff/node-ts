@@ -5,10 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Pickle Art</title>
     <style>
+      .area {
+        border: 1px solid black;
+        width: fit-content;
+      }
       .pickle {
         width: 20px;
         height: 20px;
-        border: 1px solid black;
         display: inline-block;
         background: rgb(10, 0, 0);
       }
@@ -68,21 +71,21 @@
           v-bind:style="{background: 'rgb(' + currentColour.red + ',' + currentColour.green + ',' + currentColour.blue + ')'}"
         ></span>
       </div>
-      <div v-for="(row, rowNumber) in grid">
-        <span
-          class="pickle"
-          v-for="(pickle, pickleNumber) in row"
-          v-bind:style="{background: 'rgb(' + pickle.colour.red + ',' + pickle.colour.green + ',' + pickle.colour.blue + ')'}"
-          v-on:click="colourPickle(rowNumber, pickleNumber)"
-        ></span>
+      <div class="area">
+        <div v-for="(row, rowNumber) in grid">
+          <span
+            class="pickle"
+            v-for="(pickle, pickleNumber) in row"
+            v-bind:style="{background: 'rgb(' + pickle.colour.red + ',' + pickle.colour.green + ',' + pickle.colour.blue + ')'}"
+            v-on:click="colourPickle(rowNumber, pickleNumber)"
+          ></span>
+        </div>
       </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
-      const socket = io("http://localhost:3000");
-
       var app = new Vue({
         el: "#app",
         data: {
@@ -91,11 +94,12 @@
             green: 169,
             blue: 120 // Pickle-green
           },
-          grid: []
+          grid: [],
+          socket: io("http://localhost:3000")
         },
         methods: {
           colourPickle(x, y) {
-            socket.emit("updatePickle", x, y, app.currentColour);
+            app.socket.emit("updatePickle", x, y, app.currentColour);
             app.grid[x][y].colour = app.currentColour;
           },
           sendMsg() {
@@ -104,7 +108,7 @@
         }
       });
 
-      socket.on("broadcastGrid", grid => {
+      app.socket.on("broadcastGrid", grid => {
         app.grid = grid;
       });
 
