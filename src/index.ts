@@ -1,13 +1,25 @@
-import express from 'express';
-import cors from 'cors';
+import * as express from "express";
+import * as path from "path";
 
 const app = express();
-app.use(cors());
+app.set("port", process.env.PORT || 3000);
 
-app.get('/', (req, res) => {
-    return res.send("Hello world!");
+let http = require("http").Server(app);
+let io = require("socket.io")(http);
+
+app.get("/", (req: any, res: any) => {
+  res.sendFile(path.resolve("./views/index.html"));
 });
 
-app.listen(8080, () => {
-    console.log('App is now running');
+
+io.on("connection", (socket: any) => {
+  console.log("a user connected");
+  socket.on("message", (message: any) => {
+    console.log(message);
+    socket.emit("message", message)
+  });
+});
+
+const server = http.listen(3000, () => {
+  console.log("listening on *:3000");
 });

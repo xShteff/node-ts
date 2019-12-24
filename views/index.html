@@ -1,0 +1,43 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Messing out with Sockets</title>
+  </head>
+  <body>
+    <div id="app">
+      <input type="text" v-model="currentMessage">
+      <button v-on:click="sendMsg">Hit Me</button>
+
+      <ul>
+        <li v-for="message in messages">{{message}}</li>
+      </ul>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+      const socket = io("http://localhost:3000");
+
+      var app = new Vue({
+        el: "#app",
+        data: {
+          currentMessage: "Test",
+          messages: ["Test"]
+        },
+        methods: {
+          sendMsg() {
+            socket.emit("message", app.currentMessage);
+          }
+        }
+      });
+
+      socket.on("message", function(data) {
+        console.log(data);
+        console.log(app);
+        app.messages.push(data);
+      });
+    </script>
+  </body>
+</html>
