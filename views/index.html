@@ -104,9 +104,6 @@
           colourPickle(x, y) {
             app.socket.emit("updatePickle", x, y, app.currentColour);
             app.grid[x][y].colour = app.currentColour;
-          },
-          sendMsg() {
-            socket.emit("message", app.currentMessage);
           }
         }
       });
