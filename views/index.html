@@ -4,10 +4,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Pickle Art</title>
+    <!-- I'm aware this file is horrible. Cba to do it properly. -->
     <style>
       .area {
         border: 1px solid black;
         width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
       }
       .pickle {
         width: 20px;
@@ -16,9 +19,14 @@
         border: 1px solid black;
         background: rgb(10, 0, 0);
       }
-      .sliders {
+      .controls {
         width: 200px;
         padding: 10px;
+        position: fixed;
+      }
+      .slider-label {
+        float: left;
+        padding: 10px 0;
       }
       .slider {
         -webkit-appearance: none;
@@ -29,58 +37,107 @@
         opacity: 0.7;
         -webkit-transition: 0.2s;
         transition: opacity 0.2s;
+        float: right;
+      }
+
+      .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 10px;
+        height: 15px;
+        cursor: pointer;
+      }
+
+      .slider-red::-webkit-slider-thumb {
+        background: #af4c4c;
+      }
+      .slider-red::-moz-range-thumb {
+        background: #af4c4c;
+      }
+
+      .slider-blue::-webkit-slider-thumb {
+        background: #121a8d;
+      }
+      .slider-blue::-moz-range-thumb {
+        background: #121a8d;
+      }
+
+      .slider-green::-webkit-slider-thumb {
+        background: #4caf54;
+      }
+      .slider-green::-moz-range-thumb {
+        background: #4caf54;
       }
 
       .slider:hover {
         opacity: 1;
+      }
+
+      .colour-preview {
+        float:left;
+        margin-top: 10px;
       }
     </style>
   </head>
   <body>
     <div id="app">
       User count: {{userCount}}
-      <div class="sliders">
-        Red: {{currentColour.red}}
-        <input
-          type="range"
-          min="0"
-          max="255"
-          class="slider .slider-red"
-          id="myRange"
-          v-model="currentColour.red"
-        />
-        Green: {{currentColour.green}}
-        <input
-          type="range"
-          min="0"
-          max="255"
-          class="slider"
-          id="myRange"
-          v-model="currentColour.green"
-        />
-        Blue: {{currentColour.blue}}
-        <input
-          type="range"
-          min="0"
-          max="255"
-          class="slider"
-          id="myRange"
-          v-model="currentColour.blue"
-        />
+      <div class="controls">
+        <div class="slider-container">
+          <span class="slider-label">
+            Red: {{currentColour.red}}
+          </span>
+          <input
+            type="range"
+            min="0"
+            max="255"
+            class="slider slider-red"
+            id="myRange"
+            v-model="currentColour.red"
+          />
+        </div>
+        <div class="slider-container">
+          <span class="slider-label">
+            Green: {{currentColour.green}}
+          </span>
+          <input
+            type="range"
+            min="0"
+            max="255"
+            class="slider slider-green"
+            id="myRange"
+            v-model="currentColour.green"
+          />
+        </div>
+        <div class="slider-container">
+          <span class="slider-label">
+            Blue: {{currentColour.blue}}
+          </span>
+          <input
+            type="range"
+            min="0"
+            max="255"
+            class="slider slider-blue"
+            id="myRange"
+            v-model="currentColour.blue"
+          />
+        </div>
 
         <span
-          class="pickle"
+          class="pickle colour-preview"
           v-bind:style="{background: 'rgb(' + currentColour.red + ',' + currentColour.green + ',' + currentColour.blue + ')'}"
         ></span>
       </div>
-      <div class="area">
-        <div v-for="(row, rowNumber) in grid">
-          <span
-            class="pickle"
-            v-for="(pickle, pickleNumber) in row"
-            v-bind:style="{background: 'rgb(' + pickle.colour.red + ',' + pickle.colour.green + ',' + pickle.colour.blue + ')'}"
-            v-on:click="colourPickle(rowNumber, pickleNumber)"
-          ></span>
+      <div class="container">
+        <div class="area">
+          <div v-for="(row, rowNumber) in grid">
+            <span
+              class="pickle"
+              v-for="(pickle, pickleNumber) in row"
+              v-bind:style="{background: 'rgb(' + pickle.colour.red + ',' + pickle.colour.green + ',' + pickle.colour.blue + ')'}"
+              v-on:click="colourPickle(rowNumber, pickleNumber)"
+            ></span>
+          </div>
         </div>
       </div>
     </div>
@@ -115,7 +172,6 @@
       app.socket.on("userCount", userCount => {
         app.userCount = userCount;
       });
-
     </script>
   </body>
 </html>
