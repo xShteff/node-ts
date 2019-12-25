@@ -6,28 +6,42 @@
     <title>Pickle Art</title>
     <!-- I'm aware this file is horrible. Cba to do it properly. -->
     <style>
+      html,
+      body {
+        font-family: sans-serif;
+      }
+
+      * {
+        user-select: none;
+      }
+
       .area {
         border: 1px solid black;
         width: fit-content;
         margin-left: auto;
         margin-right: auto;
       }
+
       .pickle {
         width: 20px;
         height: 20px;
         display: inline-block;
         border: 1px solid black;
         background: rgb(10, 0, 0);
+        cursor: pointer;
       }
+
       .controls {
         width: 200px;
         padding: 10px;
         position: fixed;
       }
+
       .slider-label {
         float: left;
         padding: 10px 0;
       }
+
       .slider {
         -webkit-appearance: none;
         width: 100%;
@@ -51,6 +65,7 @@
       .slider-red::-webkit-slider-thumb {
         background: #af4c4c;
       }
+
       .slider-red::-moz-range-thumb {
         background: #af4c4c;
       }
@@ -58,6 +73,7 @@
       .slider-blue::-webkit-slider-thumb {
         background: #121a8d;
       }
+
       .slider-blue::-moz-range-thumb {
         background: #121a8d;
       }
@@ -65,6 +81,7 @@
       .slider-green::-webkit-slider-thumb {
         background: #4caf54;
       }
+
       .slider-green::-moz-range-thumb {
         background: #4caf54;
       }
@@ -74,8 +91,14 @@
       }
 
       .colour-preview {
-        float:left;
+        float: left;
         margin-top: 10px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .clear {
+        clear: both;
       }
     </style>
   </head>
@@ -83,6 +106,11 @@
     <div id="app">
       User count: {{userCount}}
       <div class="controls">
+        <div
+          class="pickle colour-preview"
+          v-bind:style="{background: 'rgb(' + currentColour.red + ',' + currentColour.green + ',' + currentColour.blue + ')'}"
+        ></div>
+        <div class="clear"></div>
         <div class="slider-container">
           <span class="slider-label">
             Red: {{currentColour.red}}
@@ -122,11 +150,6 @@
             v-model="currentColour.blue"
           />
         </div>
-
-        <span
-          class="pickle colour-preview"
-          v-bind:style="{background: 'rgb(' + currentColour.red + ',' + currentColour.green + ',' + currentColour.blue + ')'}"
-        ></span>
       </div>
       <div class="container">
         <div class="area">
