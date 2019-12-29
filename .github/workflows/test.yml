@@ -1,0 +1,11 @@
+on:
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    name: test
+    runs-on: [ubuntu-latest, self-hosted, ARM32]
+    steps:
+    - uses: actions/checkout@master
+    - run: npm ci
