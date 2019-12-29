@@ -5,7 +5,7 @@ on:
 jobs:
   test:
     name: test
-    runs-on: [ubuntu-latest, self-hosted, ARM32]
+    runs-on: [self-hosted]
     steps:
     - uses: actions/checkout@master
     - run: npm ci
